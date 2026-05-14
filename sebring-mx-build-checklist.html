@@ -1,0 +1,1818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sebring MX — Ford 302 Build Checklist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f1ead9;
+    --paper-warm: #ebe2cb;
+    --paper-edge: #d8cdb0;
+    --ink: #1a1610;
+    --ink-soft: #4a4030;
+    --ink-faint: #7a6e58;
+    --rule: #b3a786;
+    --brg: #1f3a2b;          /* British racing green */
+    --brg-deep: #142a1f;
+    --burgundy: #6a1a1f;
+    --accent-gold: #b48a3b;
+    --check-done: #2c5f43;
+    --grid: rgba(26, 22, 16, 0.06);
+    --shadow: 0 1px 0 rgba(26,22,16,0.05), 0 12px 30px -16px rgba(26,22,16,0.25);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.55;
+  }
+
+  /* Paper texture using layered gradients */
+  body {
+    background-image:
+      radial-gradient(ellipse at 20% 10%, rgba(180, 138, 59, 0.08) 0%, transparent 45%),
+      radial-gradient(ellipse at 80% 80%, rgba(31, 58, 43, 0.05) 0%, transparent 50%),
+      repeating-linear-gradient(0deg, transparent 0, transparent 2px, rgba(26, 22, 16, 0.012) 2px, rgba(26, 22, 16, 0.012) 4px),
+      linear-gradient(180deg, var(--paper) 0%, var(--paper-warm) 100%);
+    min-height: 100vh;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    max-width: 1280px;
+    margin: 0 auto;
+    gap: 0;
+  }
+
+  /* Sidebar nav */
+  .sidebar {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 32px 24px;
+    border-right: 1px solid var(--rule);
+    background: var(--paper-warm);
+  }
+  .sidebar-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brg);
+    margin-bottom: 18px;
+  }
+  .sidebar-nav { list-style: none; padding: 0; margin: 0 0 24px 0; }
+  .sidebar-nav li { margin-bottom: 6px; }
+  .sidebar-nav a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 8px;
+    border-radius: 3px;
+    transition: background 0.15s, color 0.15s;
+    border-left: 2px solid transparent;
+  }
+  .sidebar-nav a:hover {
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .sidebar-nav a .num {
+    color: var(--accent-gold);
+    font-weight: 500;
+    min-width: 24px;
+  }
+  .sidebar-nav a .pct {
+    margin-left: auto;
+    color: var(--ink-faint);
+    font-size: 11px;
+  }
+  .sidebar-nav a.complete .pct { color: var(--check-done); }
+  .sidebar-nav a.complete { color: var(--check-done); }
+
+  /* Controls block */
+  .controls {
+    border-top: 1px solid var(--rule);
+    padding-top: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 8px 12px;
+    background: transparent;
+    border: 1px solid var(--rule);
+    color: var(--ink-soft);
+    border-radius: 2px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+  }
+  .btn:hover {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+  .btn-primary {
+    background: var(--brg);
+    color: var(--paper);
+    border-color: var(--brg);
+  }
+  .btn-primary:hover {
+    background: var(--brg-deep);
+    border-color: var(--brg-deep);
+  }
+  .btn.toggled {
+    background: var(--burgundy);
+    color: var(--paper);
+    border-color: var(--burgundy);
+  }
+
+  /* Main content */
+  .content {
+    padding: 60px 80px 120px;
+    max-width: 920px;
+  }
+
+  /* Hero */
+  .hero {
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 40px;
+    margin-bottom: 48px;
+    position: relative;
+  }
+  .hero-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent-gold);
+    margin-bottom: 16px;
+  }
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: clamp(38px, 5vw, 58px);
+    line-height: 1.02;
+    margin: 0 0 20px 0;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--brg);
+    font-weight: 500;
+  }
+  .hero p {
+    font-size: 18px;
+    color: var(--ink-soft);
+    max-width: 700px;
+    margin: 0 0 24px 0;
+  }
+
+  /* Spec block */
+  .spec-block {
+    background: var(--paper-warm);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--brg);
+    padding: 20px 24px;
+    margin: 24px 0;
+    font-size: 15.5px;
+  }
+  .spec-block .spec-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--brg);
+    margin-bottom: 10px;
+  }
+  .spec-block ul { margin: 0; padding-left: 18px; }
+  .spec-block li { margin-bottom: 3px; }
+  .spec-block.warning {
+    border-left-color: var(--burgundy);
+    background: rgba(106, 26, 31, 0.04);
+  }
+  .spec-block.warning .spec-title { color: var(--burgundy); }
+
+  /* Progress */
+  .progress-wrap {
+    margin-top: 32px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  .progress-bar {
+    flex: 1;
+    height: 6px;
+    background: var(--paper-edge);
+    border-radius: 0;
+    overflow: hidden;
+    position: relative;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--brg) 0%, var(--check-done) 100%);
+    width: 0%;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .progress-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+    letter-spacing: 0.08em;
+    min-width: 90px;
+    text-align: right;
+  }
+  .progress-text strong {
+    color: var(--brg);
+    font-weight: 500;
+  }
+
+  /* Phase */
+  .phase {
+    margin-bottom: 64px;
+    position: relative;
+  }
+  .phase-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 4px;
+    padding-bottom: 14px;
+    border-bottom: 2px solid var(--ink);
+  }
+  .phase-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    color: var(--accent-gold);
+    font-weight: 500;
+  }
+  .phase-title {
+    font-family: 'Fraunces', serif;
+    font-size: 30px;
+    font-weight: 600;
+    margin: 0;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    flex: 1;
+  }
+  .phase-progress {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+  .phase-progress.complete { color: var(--check-done); }
+  .phase-intro {
+    font-style: italic;
+    color: var(--ink-soft);
+    margin: 18px 0 24px 0;
+    font-size: 16px;
+  }
+
+  /* Group */
+  .group {
+    margin: 28px 0;
+  }
+  .group-title {
+    font-family: 'Fraunces', serif;
+    font-size: 19px;
+    font-weight: 600;
+    margin: 24px 0 12px 0;
+    color: var(--brg);
+    letter-spacing: 0;
+  }
+  .group-note {
+    background: rgba(180, 138, 59, 0.08);
+    border-left: 2px solid var(--accent-gold);
+    padding: 10px 14px;
+    margin: 12px 0;
+    font-size: 14.5px;
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+  .group-note strong { color: var(--burgundy); font-style: normal; font-weight: 600; }
+
+  /* Item / checkbox */
+  ul.items { list-style: none; padding: 0; margin: 0; }
+  li.item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 8px 0 8px 0;
+    border-bottom: 1px dotted var(--rule);
+    position: relative;
+  }
+  li.item:last-child { border-bottom: none; }
+  li.item .checkbox-area {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    margin-top: 2px;
+    position: relative;
+  }
+  li.item input[type="checkbox"] {
+    opacity: 0;
+    position: absolute;
+    inset: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+  }
+  li.item .box {
+    width: 22px;
+    height: 22px;
+    border: 1.5px solid var(--ink-soft);
+    background: var(--paper);
+    border-radius: 2px;
+    position: relative;
+    transition: all 0.15s;
+  }
+  li.item:hover .box { border-color: var(--ink); }
+  li.item input[type="checkbox"]:checked + .box {
+    background: var(--check-done);
+    border-color: var(--check-done);
+  }
+  li.item input[type="checkbox"]:checked + .box::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 7px;
+    width: 6px;
+    height: 11px;
+    border: solid var(--paper);
+    border-width: 0 2.5px 2.5px 0;
+    transform: rotate(45deg);
+  }
+  li.item .item-text {
+    flex: 1;
+    color: var(--ink);
+    line-height: 1.55;
+    padding-right: 80px;
+    transition: color 0.15s, text-decoration 0.15s;
+  }
+  li.item.checked .item-text {
+    color: var(--ink-faint);
+    text-decoration: line-through;
+    text-decoration-color: var(--rule);
+  }
+  li.item .item-text[contenteditable="true"] {
+    outline: 1px dashed var(--accent-gold);
+    background: rgba(180, 138, 59, 0.06);
+    padding: 4px 8px;
+    border-radius: 2px;
+  }
+
+  /* Note attached to item */
+  .item-note {
+    flex-basis: 100%;
+    margin-left: 36px;
+    margin-top: 6px;
+    font-size: 14px;
+    color: var(--ink-soft);
+    font-style: italic;
+    padding: 6px 12px;
+    background: rgba(180, 138, 59, 0.08);
+    border-left: 2px solid var(--accent-gold);
+    border-radius: 0 2px 2px 0;
+    width: calc(100% - 50px);
+  }
+  .item-note[contenteditable="true"] {
+    outline: 1px dashed var(--accent-gold);
+    background: rgba(180, 138, 59, 0.15);
+  }
+  .item-note:empty::before {
+    content: "Add a note…";
+    color: var(--ink-faint);
+    opacity: 0.6;
+  }
+
+  /* Item actions (visible in edit mode) */
+  .item-actions {
+    position: absolute;
+    right: 0;
+    top: 8px;
+    display: none;
+    gap: 4px;
+  }
+  body.edit-mode .item-actions { display: flex; }
+  .icon-btn {
+    background: transparent;
+    border: 1px solid var(--rule);
+    color: var(--ink-faint);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 2px 7px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.15s;
+  }
+  .icon-btn:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .icon-btn.danger:hover { background: var(--burgundy); border-color: var(--burgundy); }
+
+  body.edit-mode .item-text {
+    /* In edit mode, click to edit */
+    cursor: text;
+  }
+
+  .add-item-btn {
+    display: none;
+    margin: 10px 0 0 36px;
+    background: transparent;
+    border: 1px dashed var(--rule);
+    color: var(--ink-faint);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.15s;
+  }
+  body.edit-mode .add-item-btn { display: inline-block; }
+  .add-item-btn:hover { background: var(--brg); color: var(--paper); border-color: var(--brg); border-style: solid; }
+
+  /* Search */
+  .search-wrap {
+    position: sticky;
+    top: 0;
+    background: var(--paper);
+    padding: 18px 0 14px 0;
+    margin-bottom: 8px;
+    z-index: 10;
+    border-bottom: 1px solid var(--rule);
+  }
+  .search-input {
+    width: 100%;
+    padding: 12px 16px;
+    font-family: 'EB Garamond', serif;
+    font-size: 16px;
+    background: var(--paper-warm);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    color: var(--ink);
+    outline: none;
+    transition: border 0.15s;
+  }
+  .search-input:focus {
+    border-color: var(--brg);
+    background: var(--paper);
+  }
+  .search-input::placeholder { color: var(--ink-faint); }
+
+  /* Hidden / filtered */
+  .hidden { display: none !important; }
+  .filter-dim { opacity: 0.25; }
+  mark { background: rgba(180, 138, 59, 0.35); color: inherit; padding: 1px 2px; }
+
+  /* Footer */
+  .footer {
+    margin-top: 80px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    color: var(--ink-faint);
+    font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+
+  /* Mobile */
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar {
+      position: relative;
+      height: auto;
+      border-right: none;
+      border-bottom: 1px solid var(--rule);
+      padding: 20px;
+    }
+    .content { padding: 40px 24px 80px; }
+    li.item .item-text { padding-right: 0; }
+    .item-actions { position: static; margin-top: 8px; }
+  }
+
+  /* Print */
+  @media print {
+    body { background: white; color: black; font-size: 11pt; }
+    .sidebar, .search-wrap, .controls, .add-item-btn, .item-actions, #file-input { display: none !important; }
+    .layout { grid-template-columns: 1fr; }
+    .content { padding: 0; max-width: 100%; }
+    .phase { break-inside: avoid-page; page-break-inside: avoid; }
+    .item-note { background: none; border-left: 1px solid #999; }
+    li.item .box { border: 1px solid #333; }
+    li.item input[type="checkbox"]:checked + .box { background: #333; }
+    li.item.checked .item-text { color: #555; }
+    a { color: black; text-decoration: none; }
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--brg);
+    color: var(--paper);
+    padding: 12px 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    border-radius: 2px;
+    box-shadow: var(--shadow);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.2s, transform 0.2s;
+    z-index: 100;
+    pointer-events: none;
+  }
+  .toast.visible { opacity: 1; transform: translateY(0); }
+
+  /* Ornament under hero */
+  .ornament {
+    text-align: center;
+    color: var(--accent-gold);
+    font-size: 16px;
+    letter-spacing: 1em;
+    margin: 18px 0 0 0;
+    opacity: 0.6;
+  }
+</style>
+</head>
+<body>
+  <input type="file" id="file-input" accept="application/json" style="display:none">
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-title">Phases</div>
+      <ul class="sidebar-nav" id="sidebar-nav"></ul>
+
+      <div class="controls">
+        <button class="btn" id="edit-toggle">✎ Edit Mode</button>
+        <button class="btn" id="export-btn">⤓ Export Progress</button>
+        <button class="btn" id="import-btn">⤒ Import Progress</button>
+        <button class="btn" id="print-btn">🖨 Print</button>
+        <button class="btn" id="reset-btn">⟲ Reset All</button>
+      </div>
+    </aside>
+
+    <main class="content">
+      <header class="hero">
+        <div class="hero-eyebrow">A Build Log · Workshop Manual</div>
+        <h1 id="title"></h1>
+        <div id="hero-intro"></div>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+          <div class="progress-text"><strong id="progress-pct">0%</strong> · <span id="progress-count">0 / 0</span></div>
+        </div>
+      </header>
+
+      <div class="search-wrap">
+        <input type="text" class="search-input" id="search" placeholder="Search items, phases, or notes…">
+      </div>
+
+      <div id="phases"></div>
+
+      <div class="footer">
+        Built for the love of small British roadsters with big American V8s. <br>
+        Progress saves automatically to this browser. Use <em>Export</em> to share with your friend.
+      </div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+  /* Embedded data */
+  const DATA = {
+  "title": "Classic Roadsters Sebring MX — Ford 302 Build Checklist",
+  "intro_blocks": [
+    {
+      "type": "paragraph",
+      "content": "A tailored ground-up build checklist for the Classic Roadsters Austin Healey 3000 replica (Sebring MX) with a Ford 302 (5.0L Windsor) drivetrain."
+    },
+    {
+      "type": "paragraph",
+      "content": "**Known kit specs to plan around:**"
+    },
+    {
+      "type": "list",
+      "content": [
+        "Boxed rectangular-tube steel chassis (shared lineage with the Classic Roadsters Cobra kit)",
+        "Wheelbase ~94.5\", track ~58.5\"",
+        "Mustang II style front suspension (A-arms, rack-and-pinion)",
+        "Ford 8.8\" rear axle is the most common pairing",
+        "Fiberglass body in separate sections: front clip, doors, rear clip, trunk lid (optional hardtop)",
+        "5×4.5\" Ford bolt pattern wheels"
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": "**Important:** Classic Roadsters is no longer in business. Build support, missing manual pages, body fitment tips, and frame quirks come from the owners' community. Track these down before you start cutting."
+    }
+  ],
+  "phases": [
+    {
+      "id": "phase-1",
+      "title": "Phase 1 — Planning & Community",
+      "intro": null,
+      "groups": [
+        {
+          "title": null,
+          "items": [
+            "Confirm what came with your kit (frame only, frame + body, partial roller, abandoned project?)",
+            "Inventory all parts and crate contents against any supplied bill of materials",
+            "Track down the Classic Roadsters assembly manual (PDFs circulate on forums; the kit shipped with binders)",
+            "Join the Classic Roadsters / Sebring MX owners groups (Facebook groups, kit car forums, Cobra Country threads — the Cobra-frame builders know your chassis)",
+            "Identify a local builder who has finished one — single best resource you'll find",
+            "Decide period-correct cosmetics vs. restomod (affects wheels, gauges, top, trim choices)",
+            "Decide carbureted 302 (simpler, period-look) vs. EFI 302 (driveability, cold starts, mileage)",
+            "Decide manual vs. automatic transmission",
+            "Budget worksheet (kit + 302 + drivetrain + suspension + brakes + glass + interior + paint + tools + registration + 30% contingency)",
+            "Builder's insurance for the construction period",
+            "Research Colorado's kit/specially-constructed vehicle titling process (Colorado uses a \"Specially Constructed Vehicle\" path with VIN inspection through DMV)"
+          ],
+          "notes": []
+        }
+      ]
+    },
+    {
+      "id": "phase-2",
+      "title": "Phase 2 — Workspace and Tools",
+      "intro": null,
+      "groups": [
+        {
+          "title": "Workspace",
+          "items": [
+            "Two-car bay minimum with bench and shelving",
+            "Good overhead lighting plus task lighting",
+            "Heat for Colorado winters (you'll lose months otherwise)",
+            "Ventilation for solvents and welding",
+            "Sealed concrete or rubber matting",
+            "Fire extinguisher (ABC), first aid kit"
+          ],
+          "notes": []
+        },
+        {
+          "title": "Lifting and support",
+          "items": [
+            "Floor jack and 4 jack stands",
+            "Engine hoist",
+            "Engine stand (Ford 302 mounts to standard small-block stands)",
+            "Transmission jack (rental fine for one-time install)",
+            "Body dolly or rotisserie for the fiberglass shell"
+          ],
+          "notes": []
+        },
+        {
+          "title": "Hand and power",
+          "items": [
+            "SAE socket set (the 302 and most kit hardware are SAE)",
+            "Metric set as well (some imported parts and modern aftermarket use metric)",
+            "Torque wrenches: 1/4\", 3/8\", 1/2\"",
+            "Impact wrench, impact sockets",
+            "Angle grinder, cutoff wheels, flap discs",
+            "MIG welder (220V preferred for frame mod work)",
+            "Air compressor (60 gal, 5+ HP) for paint and air tools",
+            "Drill with step bits (needed for body mount holes)"
+          ],
+          "notes": []
+        },
+        {
+          "title": "Bodywork",
+          "items": [
+            "Random orbital sander",
+            "Long sanding boards",
+            "HVLP paint gun",
+            "Respirator (organic vapor)",
+            "Booth or rented spray space"
+          ],
+          "notes": []
+        },
+        {
+          "title": "Diagnostic",
+          "items": [
+            "Multimeter",
+            "Compression tester",
+            "Timing light (works with 302 distributor or as a tach reference for EFI)",
+            "Fuel pressure gauge (essential if running EFI)",
+            "OBD-I scanner if using a 1986-95 5.0 EEC-IV computer"
+          ],
+          "notes": []
+        }
+      ]
+    },
+    {
+      "id": "phase-3",
+      "title": "Phase 3 — Chassis Inspection and Prep",
+      "intro": "*If your frame is already powder-coated and assembled, skim to body mounting. If it's bare or used, do this fully.*",
+      "groups": [
+        {
+          "title": null,
+          "items": [
+            "Inspect every weld on the boxed-tube frame",
+            "Verify wheelbase at 94.5\" and that the frame is square (cross-measure diagonals)",
+            "Check for any rust pinholes inside the boxed sections (mirror + light)",
+            "Treat inside of boxed sections (Eastwood Internal Frame Coating or similar)",
+            "Repair any cracked welds, especially at suspension mount points",
+            "Add chassis reinforcement if running >300 hp (4-point or 6-point cage tie-ins are common upgrades)",
+            "Sandblast or chemical strip",
+            "Etch prime",
+            "Powder coat or two-part epoxy chassis paint",
+            "Install body mount pads/bushings"
+          ],
+          "notes": []
+        }
+      ]
+    },
+    {
+      "id": "phase-4",
+      "title": "Phase 4 — Front Suspension (Mustang II Platform)",
+      "intro": "The Mustang II front end is one of the best-documented platforms in hot rodding. Almost every aftermarket vendor (Fatman Fabrication, Heidts, TCI, Speedway) makes parts for it.",
+      "groups": [
+        {
+          "title": null,
+          "items": [
+            "Verify what's installed: factory Mustang II parts, Fatman, Heidts, or other",
+            "New upper and lower control arm bushings",
+            "New ball joints (upper and lower)",
+            "New tie rod ends and bellows boots",
+            "Coilovers or new shocks + springs (spring rate ~400–500 lb/in front is typical for this weight with a 302)",
+            "Rack and pinion: manual or power (manual is fine on a 2,400 lb car; power adds plumbing complexity)",
+            "New rack bushings",
+            "Steering shaft with appropriate U-joints from column to rack",
+            "Front sway bar with new end links and bushings",
+            "New wheel bearings (Mustang II uses 1973-78 Pinto/Mustang II bearings — readily available)",
+            "Confirm camber/caster after assembly (Mustang II spindles allow shim adjustment)"
+          ],
+          "notes": []
+        }
+      ]
+    },
+    {
+      "id": "phase-5",
+      "title": "Phase 5 — Rear Suspension and Axle (Leaf-Sprung Ford 8.8)",
+      "intro": "The Ford 8.8 is the right rear for a 302 in this car. Sourced from 1986-2004 Mustangs commonly, also Explorers, Crown Vics, and Ranger. Note that leaf-sprung 8.8s come most easily from Ford trucks (Ranger, Explorer 2WD, F-150) — Mustang 8.8s came with coil/4-link from the factory, so a Mustang axle needs leaf spring perches welded on.",
+      "groups": [
+        {
+          "title": "Axle (you have it — inspect and refresh)",
+          "items": [
+            "Identify the donor: Mustang 8.8 (28-spline, originally coil-sprung — verify leaf perches were added properly and at correct width/pinion angle), Explorer 8.8 (31-spline, came leaf-sprung in 2WD trim, often with factory disc brakes already), or Ranger/Crown Vic 8.8",
+            "Decode the gear ratio (axle tag, or count driveshaft turns vs. one full wheel revolution with both wheels free) — confirm it matches your build plan",
+            "Open the diff cover, inspect ring and pinion wear pattern, check backlash",
+            "Limited slip check — if you have an open diff, this is the right time to swap in a Traction-Lok, Eaton Truetrac, or Eaton Detroit Locker",
+            "New diff cover gasket and fluid",
+            "Inspect axle shafts for spline wear, run-out",
+            "New axle bearings and seals",
+            "If perches were welded for leaves, re-verify: width to chassis, pinion angle (target ~2-3° down at ride height), and squareness to driveshaft"
+          ],
+          "notes": []
+        },
+        {
+          "title": "Rear disc brakes",
+          "items": [
+            "Aftermarket kit (Wilwood, Aerospace Components, SSBC) OR Explorer factory disc swap OR Cobra/SVT rear disc swap",
+            "Calipers, rotors, pads, brackets",
+            "Parking brake: integrated mini-drum inside hat (most aftermarket kits) or cable-actuated caliper (Explorer/Cobra style)",
+            "Parking brake cables routed and adjusted to match your handbrake lever",
+            "Banjo bolts and crush washers",
+            "Flexible brake line from chassis to axle housing",
+            "Hard line across axle housing from junction to passenger-side caliper"
+          ],
+          "notes": []
+        },
+        {
+          "title": "Leaf springs and mounting",
+          "items": [
+            "Verify spring perches on the axle are at the correct width AND angle for your chassis",
+            "If perches need to be cut/repositioned: tack, measure pinion angle (target ~2–3° down at ride height, pointing slightly *down* relative to driveshaft to compensate for spring wrap), then weld",
+            "New leaf springs sized for the kit's weight + drivetrain — for a ~2,400 lb car with a 302, mid-eye springs from a small classic (MGB, Triumph TR6) are too soft; Ford Mustang II rear springs or custom springs from Eaton Detroit Spring are common choices",
+            "New U-bolts (don't reuse — they yield at install)",
+            "New spring pads/insulators between axle and spring",
+            "Front spring eye bushings (rubber or poly)",
+            "Rear shackles, shackle bushings, shackle bolts",
+            "Confirm shackle angle puts spring eye at proper height",
+            "New rear shocks — match travel to spring rate; KYB Gas-A-Just, Bilstein, or Koni adjustable are all good street choices",
+            "Shock mounts: upper to chassis tab, lower to axle tab — verify both are solidly welded"
+          ],
+          "notes": []
+        },
+        {
+          "title": "Traction aids (recommended with V8)",
+          "items": [
+            "Anti-tramp / traction bars (Caltracs-style or slapper bars) — leaf-sprung V8 cars without them will hop under power",
+            "Pinion snubber if hood/trunk clearance allows"
+          ],
+          "notes": []
+        },
+        {
+          "title": "Driveshaft",
+          "items": [
+            "Measure with engine and trans bolted in, axle on the leaves at ride height",
+            "Single-piece for short wheelbase",
+            "New U-joints",
+            "Balance after fabrication"
+          ],
+          "notes": []
+        }
+      ]
+    },
+    {
+      "id": "phase-6",
+      "title": "Phase 6 — Brakes (Disc / Disc)",
+      "intro": null,
+      "groups": [
+        {
+          "title": null,
+          "items": [
+            "Master cylinder sized for 4-wheel disc — 1\" or 15/16\" bore is typical (smaller bore than disc/drum)",
+            "Power booster (optional but nice on a street car) — clearance check with 302 valve covers",
+            "Front brake kit: Wilwood or Mustang II Granada-style 11\" rotors with single-piston floating calipers are most common on these chassis",
+            "Rear disc kit (see Phase 5 details): aftermarket Wilwood/Aerospace, or Explorer/Cobra factory disc swap",
+            "Stainless braided flex lines all four corners",
+            "Hard lines bent and flared (3/16\" double-flare)",
+            "Adjustable proportioning valve — **required** with disc/disc, because the rear will lock easily if unbalanced",
+            "Residual pressure valves: none needed for disc brakes (those are for drums); make sure none are inline if reusing parts from a drum brake setup",
+            "Brake pedal assembly and master pushrod geometry verified",
+            "Parking brake cables routed and adjusted (see Phase 5 — depends on rear kit style)",
+            "Bench-bleed master, then full system bleed",
+            "Pressure-bleed or two-person bleed at all four corners",
+            "After first drives, dial in prop valve: progressive rear, no early rear lockup"
+          ],
+          "notes": []
+        }
+      ]
+    },
+    {
+      "id": "phase-7",
+      "title": "Phase 7 — Engine Build (Ford 302 / 5.0L Windsor, Carbureted)",
+      "intro": null,
+      "groups": [
+        {
+          "title": "Engine choice",
+          "items": [
+            "Decide donor: 1986-95 Mustang 5.0 HO (roller cam from factory, easy carb conversion), Explorer GT40 (better heads, low miles often, swap to carb intake), or fresh crate motor (Ford Performance M-6007, Blueprint Engines, Summit)",
+            "Plan the carb conversion if using a 5.0 HO: remove EFI intake, fuel rails, injectors, EEC harness — replace with carb intake and distributor"
+          ],
+          "notes": []
+        },
+        {
+          "title": "Induction and ignition (carbureted)",
+          "items": [
+            "Intake manifold: Edelbrock Performer (street torque, dual plane) or Performer RPM (higher rpm)",
+            "Carburetor: 600 cfm Holley or Edelbrock for stock/mild, 650-670 cfm for cammed builds — vacuum secondary is the easier street tune; mechanical secondary is for performance",
+            "Carb spacer (1\" four-hole is a common torque-friendly add)",
+            "Air cleaner — low profile required given the Healey hood line; 14\" drop-base or oval is typical",
+            "Choke type: electric (clean install, one wire) or manual (period-correct look)",
+            "Distributor: Ford TFI distributor with mechanical advance (cheap, works), MSD Pro-Billet ready-to-run, or PerTronix Flame-Thrower",
+            "Coil matched to ignition box (MSD Blaster 2, PerTronix Flame-Thrower, or stock TFI coil)",
+            "Plug wires sized to clear shorty headers (8mm spiral core)"
+          ],
+          "notes": []
+        },
+        {
+          "title": "Engine build/refresh",
+          "items": [
+            "Machine work: hot tank, magnaflux block, bore .030 if needed, deck, line hone, cam tunnel check",
+            "Aluminum heads: AFR 165 (street, smaller chamber) or AFR 185 (more flow, fits up to mild builds), Trick Flow Twisted Wedge 170/185, or Edelbrock Performer RPM — all bolt on with stock intake and exhaust patterns",
+            "**Pushrod length must be checked** with aluminum heads — they're often milled differently than stock iron; use a checking pushrod and verify rocker geometry before final assembly",
+            "ARP head studs (better than bolts on aluminum, especially with re-torque cycles)",
+            "Head gaskets matched to head choice (Fel-Pro 1011-1 or 1011-2 for most aluminum heads)",
+            "Pistons appropriate for chosen heads/compression — aluminum heads tolerate ~10.5:1 on 91 octane pump gas thanks to better heat dissipation",
+            "**Bonus from aluminum:** roughly 40-50 lbs off the front of the car vs. iron heads — meaningful for a 2,400 lb roadster",
+            "Roller cam and lifters — Trick Flow Stage 1, Comp XE264HR, or Ford Racing E303/B303 are all proven street cams",
+            "Double roller timing set",
+            "New oil pump (high-volume optional, not necessary on a street car)",
+            "Windage tray",
+            "Oil pan — confirm clearance to Mustang II crossmember (front-sump pan is correct for this chassis; most 5.0 pans are front-sump already)",
+            "Harmonic balancer (50 oz-in imbalance for 5.0 HO — verify your specific crank balance!)",
+            "Water pump (standard rotation V-belt for carbureted accessory drive)",
+            "Pre-lube and prime with drill before first start"
+          ],
+          "notes": []
+        },
+        {
+          "title": "Accessory drive",
+          "items": [
+            "V-belt accessory drive is the simple, period-appropriate choice with a carb",
+            "Alternator: Ford 3G with one-wire conversion is clean",
+            "Power steering pump (if running power rack)",
+            "Mechanical fuel pump bolts to timing cover — saves an electric pump and relay"
+          ],
+          "notes": []
+        },
+        {
+          "title": "Engine mounts and clearance (you have mounts in hand — confirm fit)",
+          "items": [
+            "Verify the mounts you have are for a 302 in this specific Classic Roadsters frame (not the Cobra-frame variant, which has a different motor position)",
+            "Check mount hardware: grade 8 bolts, lock washers or thread locker",
+            "Trial-set engine on mounts before final bolt-down",
+            "Confirm valve cover clearance to inner fenders",
+            "Confirm oil pan clearance to crossmember and steering rack",
+            "Confirm distributor clearance to firewall — Healey hood and cowl are tight; a small-cap HEI or compact distributor cap may be needed",
+            "Confirm air cleaner clearance to hood"
+          ],
+          "notes": []
+        }
+      ]
+    },
+    {
+      "id": "phase-8",
+      "title": "Phase 8 — Transmission and Clutch (Borg-Warner T5)",
+      "intro": "The T5 is the right call for this build: light, compact, well-supported, and matches a 302's character. Two important notes up front: **use a World Class T5** (1985+, identifiable by the \"WC\" stamping and a 0.68 fifth gear in most variants), and **respect the torque limit** — the World Class T5 is rated around 300 lb-ft. A mild 302 with aluminum heads makes ~280-320 lb-ft, which is right at the edge. If you build it hotter, plan on an Astro Performance rebuild or G-Force gearset.",
+      "groups": [
+        {
+          "title": "T5 sourcing and inspection",
+          "items": [
+            "Confirm World Class (WC stamping on side of case)",
+            "Identify donor year — 1985-89 5.0 Mustang T5 has 2.95 first, 1990-93 has 3.35 first (taller, easier to launch with 3.55 rear)",
+            "V8 Mustang T5 vs. 4-cylinder T5 — they look identical externally but have different internals and input shaft splines; **must be V8** (1-1/16\" 10-spline input)",
+            "Inspect oil for metal, drain and refill with proper fluid (Dexron III or AT/MV is factory spec — **not** GL-4 or GL-5 gear oil, which destroys the synchros)",
+            "Shift through all gears on bench, feel for crunchy synchros",
+            "Rebuild if any doubt — Astro Performance, G-Force, or Hanlon Motorsports"
+          ],
+          "notes": []
+        },
+        {
+          "title": "Clutch",
+          "items": [
+            "Disc, pressure plate, throwout bearing — Centerforce Dual Friction or McLeod Street Pro are the proven street choices",
+            "**Verify clutch disc spline** matches your T5 input shaft (1-1/16\" 10-spline for V8 T5)",
+            "New pilot bearing/bushing in crankshaft",
+            "Resurface or replace flywheel — **50 oz-in imbalance** for 5.0 HO (1981+); confirm your specific crank",
+            "Stock-style cable clutch (clean, period) OR hydraulic throwout / external slave (smoother pedal, more parts)",
+            "Pedal hookup matched to your choice"
+          ],
+          "notes": []
+        },
+        {
+          "title": "Bellhousing and mount",
+          "items": [
+            "Ford small-block bellhousing matched to T5 bolt pattern (most 5.0 Mustang bellhousings work)",
+            "Trans crossmember — Mustang 5.0 crossmember may need modification to fit kit chassis; many builders fabricate a tube crossmember",
+            "Polyurethane trans mount"
+          ],
+          "notes": []
+        },
+        {
+          "title": "Shifter",
+          "items": [
+            "Stock T5 shifter handle, or aftermarket Hurst Billet+/Pro 5.0 / Steeda Tri-Ax for shorter throw",
+            "**Verify shifter location comes through the body tunnel** in a usable place — T5 shifter location varies between 1983-89 vs. 1990-93 cases; this can determine which donor you want",
+            "Boot and trim ring"
+          ],
+          "notes": []
+        },
+        {
+          "title": "Speedometer drive",
+          "items": [
+            "T5 has a mechanical speedo drive gear on the tailshaft — match the driven gear teeth to your tire size and rear gear ratio (Ford speedo gear calculator online)",
+            "Mechanical cable to dash speedo is the simplest path",
+            "OR use a Dakota Digital SGI-100 to convert mechanical drive to electronic signal if you went with an electronic speedo"
+          ],
+          "notes": []
+        },
+        {
+          "title": "Driveshaft",
+          "items": [
+            "Measure with engine and trans bolted in, axle on the leaves at ride height",
+            "Single-piece for short wheelbase",
+            "New U-joints",
+            "Balance after fabrication"
+          ],
+          "notes": []
+        }
+      ]
+    },
+    {
+      "id": "phase-9",
+      "title": "Phase 9 — Cooling, Fuel, Exhaust",
+      "intro": null,
+      "groups": [
+        {
+          "title": "Cooling",
+          "items": [
+            "Aluminum radiator sized for 302 (Griffin, Be Cool, Champion — 2-row aluminum is plenty for a light car)",
+            "Electric fans with thermostat switch (180–185°F on / 165°F off typical) or fan controller",
+            "Hose routing — upper and lower silicone or rubber",
+            "Overflow/recovery tank",
+            "Thermostat (180°F street, 160°F if you want lazy warm-up)",
+            "Pressure test before first start"
+          ],
+          "notes": []
+        },
+        {
+          "title": "Fuel (carbureted — keep it simple)",
+          "items": [
+            "New fuel tank (most kits use a custom aluminum or steel tank fitted to the rear chassis)",
+            "Sending unit matched to your gauge",
+            "Mechanical fuel pump on the 302 (engine-driven, no relay, no electric pump noise) — Carter, Holley, or Edelbrock 6 psi pump is fine for a 600-650 cfm carb",
+            "OR low-pressure electric pump (4-7 psi) if you want priming convenience — Carter rotary, Holley Red, or Airtex",
+            "Pre-pump strainer at the tank pickup",
+            "Inline fuel filter between pump and carb (clear-bowl glass filter is the classic look)",
+            "5/16\" fuel line from tank to pump, 5/16\" or 3/8\" from pump to carb",
+            "Hard line along chassis with short flex sections at tank and carb",
+            "No return line needed for a standard carb setup",
+            "Tank vent (rollover-style or charcoal canister if your state inspection requires it)"
+          ],
+          "notes": []
+        },
+        {
+          "title": "Exhaust",
+          "items": [
+            "Shorty or mid-length headers sized for 302 (1-5/8\" primaries street, 1-3/4\" performance)",
+            "**GT40P heads caveat:** spark plug angle requires GT40P-specific shorty headers, otherwise plugs hit the tubes",
+            "H-pipe or X-pipe crossover (X-pipe sounds better, H-pipe is more traditional)",
+            "Mufflers — Flowmaster 40s for classic 302 burble, Magnaflow for a cleaner note",
+            "Tailpipe routing through or around rear chassis",
+            "Hangers welded to chassis with rubber isolators",
+            "Heat shielding under floor pan, around fuel lines, and at the trans tunnel"
+          ],
+          "notes": []
+        }
+      ]
+    },
+    {
+      "id": "phase-10",
+      "title": "Phase 10 — Body Mounting and Fitting",
+      "intro": "This is the biggest single time sink in a fiberglass kit build. Plan for several weekends.",
+      "groups": [
+        {
+          "title": null,
+          "items": [
+            "Unbox body sections, inventory: front clip, doors (×2), rear clip, trunk lid, hood, hardtop if equipped",
+            "Inspect each piece for shipping cracks, voids, blistered gel coat",
+            "Sand all gel coat lightly to flat (220 grit) — you cannot paint over factory gel coat",
+            "Set front clip on chassis, check fender-to-tire clearance at full lock",
+            "Set rear clip, check fender-to-tire clearance at full droop and full compression",
+            "Hang doors on temporary hinges, check gaps to front and rear clips",
+            "Set hood, check shutlines",
+            "Set trunk lid, check shutlines",
+            "Mark body mount hole locations (chalk on chassis, then transfer up)",
+            "Drill body mount holes through fiberglass with stepped bits to avoid cracking",
+            "Install body mount bushings (rubber isolators with steel sleeves)",
+            "Torque body to chassis incrementally — check that doors still close cleanly",
+            "Final fit hinges, latches, strikers for hood, doors, and trunk",
+            "Verify windshield frame sits flat and square"
+          ],
+          "notes": []
+        }
+      ]
+    },
+    {
+      "id": "phase-11",
+      "title": "Phase 11 — Bodywork and Paint",
+      "intro": null,
+      "groups": [
+        {
+          "title": null,
+          "items": [
+            "Block sand entire body with 220–320 to remove gel coat shine",
+            "Fill pinholes with polyester glazing putty",
+            "Skim coat low spots with body filler",
+            "Block, block, block (this stage determines whether the car looks like a kit or like a Healey)",
+            "High-build polyester primer (multiple coats)",
+            "Guide coat, block to 400",
+            "Sealer",
+            "Base color (Healey colors: Healey Blue, BRG, Colorado Red, Ivory White, Old English White are all period-correct)",
+            "Clear coats",
+            "Cure",
+            "Wet sand 1500 → 2000 → 3000",
+            "Cut and buff",
+            "Reassemble body to chassis carefully — this is when chips happen"
+          ],
+          "notes": []
+        }
+      ]
+    },
+    {
+      "id": "phase-12",
+      "title": "Phase 12 — Glass, Trim, and Top",
+      "intro": null,
+      "groups": [
+        {
+          "title": null,
+          "items": [
+            "Windshield frame (Healey-style chrome frame; sourced through replica vendors)",
+            "Windshield glass (often laminated flat or curved to spec)",
+            "Side curtains or roll-up windows (depends on which Sebring MX trim level)",
+            "Convertible top frame (Cape Hood style for Mk III look, or earlier folding frame)",
+            "Top fabric (Stayfast or vinyl)",
+            "Tonneau cover with snaps",
+            "Bumpers (overriders for proper period look)",
+            "Grille (vertical bar for Mk II/III look)",
+            "Headlight buckets, sealed beams or H4 conversions",
+            "Taillights (period Lucas-style)",
+            "Side marker / parking lights",
+            "Badging",
+            "Exterior mirrors (bullet style for period look)",
+            "License plate brackets and lamps"
+          ],
+          "notes": []
+        }
+      ]
+    },
+    {
+      "id": "phase-13",
+      "title": "Phase 13 — Electrical",
+      "intro": null,
+      "groups": [
+        {
+          "title": null,
+          "items": [
+            "Universal aftermarket harness (Painless 10101 or 20104, Ron Francis \"Bare Bonz\" or \"Express\") — these are designed for carbureted V8 hot rods and are exactly right for this build",
+            "Fuse/relay box mounted accessible (under dash or behind kick panel)",
+            "Battery: trunk mount common for weight balance; 2 AWG cable with proper inline fuse near the battery",
+            "Battery disconnect switch (recommended for a kit car)",
+            "Charging: Ford 3G alternator with one-wire conversion is clean and simple",
+            "Starter solenoid — Ford uses a fender-mounted solenoid; mount on inner fender or firewall",
+            "Ignition switch with start/run positions",
+            "Ignition feed to distributor / coil — keep voltage drop minimal; relay-feed the coil for hot cranking",
+            "Headlight circuit, high/low beam, relays at the lights to reduce switch load",
+            "Turn signals front and rear",
+            "Hazards",
+            "Brake light pedal switch",
+            "Horn",
+            "Wipers",
+            "Heater fan (if heater fitted)",
+            "Cooling fan relay triggered by thermostatic switch or manual override",
+            "Gauges: speedo (mechanical cable from T5 tailshaft is easiest with carb build; or electronic with VSS), tach (trigger from negative coil terminal), fuel, water temp, oil pressure, voltmeter",
+            "Sender wiring for temp, oil pressure, fuel level",
+            "Label every wire at both ends"
+          ],
+          "notes": []
+        }
+      ]
+    },
+    {
+      "id": "phase-14",
+      "title": "Phase 14 — Interior",
+      "intro": null,
+      "groups": [
+        {
+          "title": null,
+          "items": [
+            "Sound deadening on floor pans, trans tunnel, firewall (302 makes heat; this matters)",
+            "Heat shield on firewall, especially behind exhaust manifolds",
+            "Carpet kit fitted",
+            "Seat frames mounted to reinforced floor (these cars often need floor reinforcement under seat mounts)",
+            "Seat upholstery (period leather buckets in red/black/biscuit are classic Healey looks)",
+            "3-point seat belts (modern safety beats period accuracy here)",
+            "Dashboard — wood-look (Mk III BJ8 style) or painted metal (earlier style)",
+            "Gauge cluster installed and tested",
+            "Steering column trim and turn signal stalk",
+            "Steering wheel (Moto-Lita 14\"-15\" wood rim is the classic Healey wheel)",
+            "Pedal pads",
+            "Shifter boot and trim ring",
+            "Handbrake lever and boot",
+            "Door panels with map pockets",
+            "Interior mirror",
+            "Trunk liner"
+          ],
+          "notes": []
+        }
+      ]
+    },
+    {
+      "id": "phase-15",
+      "title": "Phase 15 — Fluids, First Start, Tuning",
+      "intro": null,
+      "groups": [
+        {
+          "title": null,
+          "items": [
+            "Engine oil — 5W-30 or 10W-30 for 302; if flat tappet break-in needed, use ZDDP-fortified break-in oil first",
+            "Coolant (50/50 mix, bleed air via thermostat housing bleeder or upper hose)",
+            "Trans fluid — Dexron III or Mercon ATF for the T5 (**not** gear oil; the T5's synchros require ATF)",
+            "Diff fluid (75W-90 GL-5; add limited-slip friction modifier for Traction-Lok)",
+            "Brake fluid (DOT 4) and full bleed",
+            "Clutch hydraulic fluid (if hydraulic clutch)",
+            "Power steering fluid (if power rack)",
+            "Fresh fuel (no E85 unless system is set up for it)",
+            "One last walkaround — every fastener, every clamp, every connector",
+            "Battery in last",
+            "Crank with coil disconnected to build oil pressure",
+            "First start: if roller cam, idle and warm up; if flat tappet (rare on later 302s), 2,000–2,500 rpm for 20 minutes",
+            "Leak check (oil, coolant, fuel, trans)",
+            "Set base timing — 10° BTDC initial for stock cam, 12–14° for performance cams; total advance (initial + mechanical) should land around 34–36° at 3,000+ rpm",
+            "Set idle mixture screws — turn each in until lean stumble, back out 1/4 turn, balance both sides; idle vacuum should be steady at 15-18 in-Hg on a stock cam",
+            "Set idle speed (700-800 rpm in neutral for manual; 650-750 in gear for auto)",
+            "Set choke (electric chokes: adjust so it fully opens within 2-3 minutes of cold start)",
+            "Verify vacuum advance hooks to ported vacuum (above throttle plate) on most builds",
+            "Verify fan kicks on",
+            "Verify charging voltage 13.8–14.5V"
+          ],
+          "notes": []
+        }
+      ]
+    },
+    {
+      "id": "phase-16",
+      "title": "Phase 16 — Colorado Registration and Legal",
+      "intro": null,
+      "groups": [
+        {
+          "title": null,
+          "items": [
+            "Gather all parts receipts (proves ownership of components, supports value)",
+            "Photograph entire build",
+            "Schedule Colorado VIN verification through your county Motor Vehicle office or CSP",
+            "Colorado \"Specially Constructed Vehicle\" titling — apply for an assigned Colorado VIN if needed",
+            "Emissions: Colorado exempts vehicles 1975 and older from emissions testing in the front range; the year-of-manufacture rules for kit cars vary — call your county MV office to confirm your kit's path before painting yourself into a corner",
+            "Insurance bound (Hagerty, American Modern, Grundy — agreed-value policies)",
+            "Initial safety inspection if required",
+            "License plates (Colorado offers Collector and Horseless Carriage plates for qualifying vehicles)"
+          ],
+          "notes": []
+        }
+      ]
+    },
+    {
+      "id": "phase-17",
+      "title": "Phase 17 — Shakedown",
+      "intro": null,
+      "groups": [
+        {
+          "title": null,
+          "items": [
+            "Re-torque wheel lugs after 50 miles",
+            "Re-torque suspension bolts after first heat cycle",
+            "Bed in brakes (series of moderate 40-to-10 stops, then cool)",
+            "First short drive, low speed",
+            "First highway drive, eyes on temp and oil pressure",
+            "Check for leaks after every drive for the first 500 miles",
+            "Oil and filter change at 500 miles (new engine cuts a lot of break-in debris)",
+            "Recheck timing once fully warmed and broken in",
+            "Professional alignment (set toe-in ~1/16\", camber slightly negative, caster as much positive as the Mustang II setup allows — usually 3–5°)",
+            "Re-torque body-to-chassis bolts",
+            "First mountain run (you live in Colorado — this is the real test for cooling and brakes)"
+          ],
+          "notes": []
+        }
+      ]
+    },
+    {
+      "id": "phase-18",
+      "title": "Build-Specific Tips",
+      "intro": null,
+      "groups": [
+        {
+          "title": null,
+          "items": [],
+          "notes": [
+            "**The Cobra-frame heritage helps.** When you can't find Healey-replica-specific advice, search Classic Roadsters Cobra build threads. The chassis is essentially the same and the suspension/brake/drivetrain knowledge transfers.",
+            "**Engine bay is tighter than a Cobra.** The Healey hood line is lower than a Cobra. Plan low-profile air cleaners and confirm distributor and valve cover clearance early.",
+            "**Heat management matters.** Light fiberglass body + 302 + Colorado summers = heat in the cockpit. Don't skimp on firewall insulation, header wrap or coating, and floor heat shielding.",
+            "**Trial-fit before you paint.** Build the car as a roller in primer, drive it on the chassis (legally on private property), shake out drivetrain and suspension issues, *then* pull the body for final paint.",
+            "**Document everything.** Photograph each subassembly, save receipts in a binder, keep a build journal. Colorado titling, insurance valuation, and future resale all depend on this paperwork.",
+            "**Wire wheels look right but are a maintenance commitment.** True knock-off wires need periodic spoke truing and inspection. Painted or chrome 15\"/16\" aluminum 72-spoke wires are a popular compromise."
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+  /* Storage keys */
+  const STATE_KEY = 'sebring-mx-build-state-v1';
+  const DATA_KEY = 'sebring-mx-build-data-v1';
+
+  /* State shape:
+     {
+       checked: { "phase-1::group-0::item-0": true, ... },
+       notes:   { "phase-1::group-0::item-0": "string", ... }
+     }
+  */
+  let state = loadState();
+  let data = loadData();  /* Possibly user-modified copy of DATA */
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STATE_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) {}
+    return { checked: {}, notes: {} };
+  }
+  function saveState() {
+    try { localStorage.setItem(STATE_KEY, JSON.stringify(state)); } catch (e) {}
+  }
+  function loadData() {
+    try {
+      const raw = localStorage.getItem(DATA_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) {}
+    return JSON.parse(JSON.stringify(DATA));  /* deep clone */
+  }
+  function saveData() {
+    try { localStorage.setItem(DATA_KEY, JSON.stringify(data)); } catch (e) {}
+  }
+
+  function itemKey(phaseIdx, groupIdx, itemIdx) {
+    return `p${phaseIdx}::g${groupIdx}::i${itemIdx}`;
+  }
+
+  /* ---------- Rendering ---------- */
+  function render() {
+    document.getElementById('title').innerHTML = highlightHTML(data.title);
+    renderHeroIntro();
+    renderPhases();
+    renderSidebar();
+    updateProgress();
+    applyFilter();
+  }
+
+  function renderHeroIntro() {
+    const el = document.getElementById('hero-intro');
+    el.innerHTML = '';
+    let pendingSpec = null;  /* spec block waiting for a list */
+
+    for (const block of (data.intro_blocks || [])) {
+      if (block.type === 'paragraph') {
+        const para = block.content;
+        if (/^\*\*Known kit specs/i.test(para)) {
+          pendingSpec = makeSpecBlock('Known Kit Specs', null);
+          el.appendChild(pendingSpec);
+        } else if (/^\*\*Important/i.test(para)) {
+          const cleaned = stripBold(para).replace(/^Important:\s*/i, '');
+          const warn = makeSpecBlock('Important', cleaned, true);
+          el.appendChild(warn);
+          pendingSpec = null;
+        } else {
+          const p = document.createElement('p');
+          p.innerHTML = formatInline(para);
+          el.appendChild(p);
+          pendingSpec = null;
+        }
+      } else if (block.type === 'list') {
+        const ul = document.createElement('ul');
+        for (const li of block.content) {
+          const lEl = document.createElement('li');
+          lEl.innerHTML = formatInline(li);
+          ul.appendChild(lEl);
+        }
+        if (pendingSpec) {
+          pendingSpec.appendChild(ul);
+          pendingSpec = null;
+        } else {
+          const wrap = makeSpecBlock(null, null);
+          wrap.appendChild(ul);
+          el.appendChild(wrap);
+        }
+      }
+    }
+  }
+
+  function makeSpecBlock(titleText, contentText, isWarning) {
+    const div = document.createElement('div');
+    div.className = 'spec-block' + (isWarning ? ' warning' : '');
+    if (titleText) {
+      const t = document.createElement('div');
+      t.className = 'spec-title';
+      t.textContent = titleText;
+      div.appendChild(t);
+    }
+    if (contentText) {
+      const p = document.createElement('div');
+      p.innerHTML = formatInline(contentText);
+      div.appendChild(p);
+    }
+    return div;
+  }
+
+  function renderPhases() {
+    const root = document.getElementById('phases');
+    root.innerHTML = '';
+    data.phases.forEach((phase, pi) => {
+      const section = document.createElement('section');
+      section.className = 'phase';
+      section.id = phase.id;
+
+      const header = document.createElement('div');
+      header.className = 'phase-header';
+      const num = document.createElement('div');
+      num.className = 'phase-number';
+      num.textContent = String(pi + 1).padStart(2, '0');
+      const h = document.createElement('h2');
+      h.className = 'phase-title';
+      h.innerHTML = formatInline(stripPhasePrefix(phase.title));
+      const prog = document.createElement('div');
+      prog.className = 'phase-progress';
+      prog.dataset.phaseIdx = pi;
+      header.appendChild(num);
+      header.appendChild(h);
+      header.appendChild(prog);
+      section.appendChild(header);
+
+      if (phase.intro) {
+        const intro = document.createElement('div');
+        intro.className = 'phase-intro';
+        intro.innerHTML = formatInline(phase.intro);
+        section.appendChild(intro);
+      }
+
+      phase.groups.forEach((group, gi) => {
+        const groupDiv = document.createElement('div');
+        groupDiv.className = 'group';
+
+        if (group.title) {
+          const gt = document.createElement('div');
+          gt.className = 'group-title';
+          gt.innerHTML = formatInline(group.title);
+          groupDiv.appendChild(gt);
+        }
+
+        for (const note of (group.notes || [])) {
+          const n = document.createElement('div');
+          n.className = 'group-note';
+          n.innerHTML = formatInline(note);
+          groupDiv.appendChild(n);
+        }
+
+        const ul = document.createElement('ul');
+        ul.className = 'items';
+        ul.dataset.phaseIdx = pi;
+        ul.dataset.groupIdx = gi;
+
+        group.items.forEach((itemText, ii) => {
+          ul.appendChild(renderItem(itemText, pi, gi, ii));
+        });
+
+        const addBtn = document.createElement('button');
+        addBtn.className = 'add-item-btn';
+        addBtn.textContent = '+ Add item';
+        addBtn.onclick = () => addItem(pi, gi);
+
+        groupDiv.appendChild(ul);
+        groupDiv.appendChild(addBtn);
+        section.appendChild(groupDiv);
+      });
+
+      root.appendChild(section);
+    });
+  }
+
+  function renderItem(itemText, pi, gi, ii) {
+    const key = itemKey(pi, gi, ii);
+    const li = document.createElement('li');
+    li.className = 'item';
+    li.dataset.key = key;
+
+    const cbArea = document.createElement('div');
+    cbArea.className = 'checkbox-area';
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.checked = !!state.checked[key];
+    if (cb.checked) li.classList.add('checked');
+    cb.addEventListener('change', () => {
+      state.checked[key] = cb.checked;
+      saveState();
+      li.classList.toggle('checked', cb.checked);
+      updateProgress();
+    });
+    const box = document.createElement('span');
+    box.className = 'box';
+    cbArea.appendChild(cb);
+    cbArea.appendChild(box);
+
+    const txt = document.createElement('div');
+    txt.className = 'item-text';
+    txt.innerHTML = formatInline(itemText);
+    txt.addEventListener('blur', () => {
+      if (document.body.classList.contains('edit-mode')) {
+        const newText = txt.innerText.trim();
+        data.phases[pi].groups[gi].items[ii] = newText;
+        saveData();
+      }
+    });
+
+    const actions = document.createElement('div');
+    actions.className = 'item-actions';
+    const noteBtn = document.createElement('button');
+    noteBtn.className = 'icon-btn';
+    noteBtn.textContent = state.notes[key] ? 'Edit Note' : '+ Note';
+    noteBtn.onclick = () => toggleNote(li, key, noteBtn);
+    const delBtn = document.createElement('button');
+    delBtn.className = 'icon-btn danger';
+    delBtn.textContent = '✕';
+    delBtn.title = 'Delete item';
+    delBtn.onclick = () => deleteItem(pi, gi, ii);
+    actions.appendChild(noteBtn);
+    actions.appendChild(delBtn);
+
+    li.appendChild(cbArea);
+    li.appendChild(txt);
+    li.appendChild(actions);
+
+    if (state.notes[key]) {
+      li.appendChild(makeNoteEl(key));
+    }
+
+    return li;
+  }
+
+  function makeNoteEl(key) {
+    const note = document.createElement('div');
+    note.className = 'item-note';
+    note.contentEditable = 'true';
+    note.textContent = state.notes[key] || '';
+    note.addEventListener('blur', () => {
+      const val = note.innerText.trim();
+      if (val) {
+        state.notes[key] = val;
+      } else {
+        delete state.notes[key];
+        note.remove();
+      }
+      saveState();
+    });
+    return note;
+  }
+
+  function toggleNote(li, key, btn) {
+    let existing = li.querySelector('.item-note');
+    if (existing) {
+      existing.focus();
+      return;
+    }
+    const note = makeNoteEl(key);
+    li.appendChild(note);
+    note.focus();
+    btn.textContent = 'Edit Note';
+  }
+
+  function addItem(pi, gi) {
+    const newItem = 'New item';
+    data.phases[pi].groups[gi].items.push(newItem);
+    saveData();
+    render();
+    /* Focus the new item for editing */
+    const phase = data.phases[pi];
+    const ii = phase.groups[gi].items.length - 1;
+    setTimeout(() => {
+      const sel = document.querySelector(`li.item[data-key="${itemKey(pi, gi, ii)}"] .item-text`);
+      if (sel && document.body.classList.contains('edit-mode')) {
+        sel.contentEditable = 'true';
+        sel.focus();
+        document.execCommand('selectAll', false, null);
+      }
+    }, 50);
+  }
+
+  function deleteItem(pi, gi, ii) {
+    if (!confirm('Delete this item?')) return;
+    data.phases[pi].groups[gi].items.splice(ii, 1);
+    /* Shift state keys */
+    const newChecked = {};
+    const newNotes = {};
+    for (const [k, v] of Object.entries(state.checked)) {
+      const m = k.match(/^p(\d+)::g(\d+)::i(\d+)$/);
+      if (m) {
+        const p = +m[1], g = +m[2], i = +m[3];
+        if (p === pi && g === gi) {
+          if (i === ii) continue;
+          if (i > ii) {
+            newChecked[itemKey(p, g, i - 1)] = v;
+            continue;
+          }
+        }
+        newChecked[k] = v;
+      }
+    }
+    for (const [k, v] of Object.entries(state.notes)) {
+      const m = k.match(/^p(\d+)::g(\d+)::i(\d+)$/);
+      if (m) {
+        const p = +m[1], g = +m[2], i = +m[3];
+        if (p === pi && g === gi) {
+          if (i === ii) continue;
+          if (i > ii) {
+            newNotes[itemKey(p, g, i - 1)] = v;
+            continue;
+          }
+        }
+        newNotes[k] = v;
+      }
+    }
+    state.checked = newChecked;
+    state.notes = newNotes;
+    saveData();
+    saveState();
+    render();
+  }
+
+  /* ---------- Sidebar ---------- */
+  function renderSidebar() {
+    const nav = document.getElementById('sidebar-nav');
+    nav.innerHTML = '';
+    data.phases.forEach((phase, pi) => {
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = '#' + phase.id;
+      a.dataset.phaseIdx = pi;
+
+      const num = document.createElement('span');
+      num.className = 'num';
+      num.textContent = String(pi + 1).padStart(2, '0');
+
+      const lbl = document.createElement('span');
+      lbl.className = 'lbl';
+      lbl.textContent = stripPhasePrefix(phase.title).split('—')[0].trim() || phase.title;
+
+      const pct = document.createElement('span');
+      pct.className = 'pct';
+      pct.dataset.phaseIdx = pi;
+      pct.textContent = '0%';
+
+      a.appendChild(num);
+      a.appendChild(lbl);
+      a.appendChild(pct);
+      li.appendChild(a);
+      nav.appendChild(li);
+    });
+  }
+
+  function updateProgress() {
+    let total = 0, done = 0;
+    data.phases.forEach((phase, pi) => {
+      let pTotal = 0, pDone = 0;
+      phase.groups.forEach((group, gi) => {
+        group.items.forEach((_, ii) => {
+          pTotal++;
+          total++;
+          if (state.checked[itemKey(pi, gi, ii)]) { pDone++; done++; }
+        });
+      });
+      const pct = pTotal ? Math.round(pDone / pTotal * 100) : 0;
+      const phaseProgEl = document.querySelector(`.phase-progress[data-phase-idx="${pi}"]`);
+      if (phaseProgEl) {
+        phaseProgEl.textContent = `${pDone} / ${pTotal} · ${pct}%`;
+        phaseProgEl.classList.toggle('complete', pTotal > 0 && pDone === pTotal);
+      }
+      const sidePct = document.querySelector(`.sidebar-nav .pct[data-phase-idx="${pi}"]`);
+      if (sidePct) {
+        sidePct.textContent = `${pct}%`;
+        sidePct.parentElement.classList.toggle('complete', pTotal > 0 && pDone === pTotal);
+      }
+    });
+    const overallPct = total ? Math.round(done / total * 100) : 0;
+    document.getElementById('progress-fill').style.width = overallPct + '%';
+    document.getElementById('progress-pct').textContent = overallPct + '%';
+    document.getElementById('progress-count').textContent = `${done} / ${total}`;
+  }
+
+  /* ---------- Edit / Export / Import / Reset ---------- */
+  document.getElementById('edit-toggle').addEventListener('click', (e) => {
+    const editing = document.body.classList.toggle('edit-mode');
+    e.currentTarget.classList.toggle('toggled', editing);
+    e.currentTarget.textContent = editing ? '✓ Done Editing' : '✎ Edit Mode';
+    document.querySelectorAll('.item-text').forEach(el => {
+      el.contentEditable = editing ? 'true' : 'false';
+    });
+    if (editing) toast('Edit mode on. Click any item to edit it, use + Note to attach notes, ✕ to delete.');
+  });
+
+  document.getElementById('export-btn').addEventListener('click', () => {
+    const payload = {
+      version: 1,
+      exported_at: new Date().toISOString(),
+      title: data.title,
+      data: data,
+      state: state,
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'sebring-mx-build-progress.json';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    toast('Progress exported. Send this JSON to your friend.');
+  });
+
+  document.getElementById('import-btn').addEventListener('click', () => {
+    document.getElementById('file-input').click();
+  });
+  document.getElementById('file-input').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const payload = JSON.parse(ev.target.result);
+        if (!payload.data || !payload.state) throw new Error('Invalid file');
+        if (!confirm('Importing will replace your current progress and notes. Continue?')) return;
+        data = payload.data;
+        state = payload.state;
+        saveData();
+        saveState();
+        render();
+        toast('Progress imported.');
+      } catch (err) {
+        toast('Could not read file: ' + err.message);
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  });
+
+  document.getElementById('print-btn').addEventListener('click', () => window.print());
+
+  document.getElementById('reset-btn').addEventListener('click', () => {
+    if (!confirm('Reset ALL progress, notes, and custom edits? This cannot be undone.')) return;
+    state = { checked: {}, notes: {} };
+    data = JSON.parse(JSON.stringify(DATA));
+    saveState();
+    saveData();
+    render();
+    toast('Reset to original checklist.');
+  });
+
+  /* ---------- Search / Filter ---------- */
+  const searchInput = document.getElementById('search');
+  searchInput.addEventListener('input', applyFilter);
+
+  function applyFilter() {
+    const q = (searchInput.value || '').trim().toLowerCase();
+    document.querySelectorAll('.phase').forEach(phase => {
+      let anyVisible = false;
+      phase.querySelectorAll('li.item').forEach(li => {
+        const text = li.querySelector('.item-text').innerText.toLowerCase();
+        const note = (li.querySelector('.item-note')?.innerText || '').toLowerCase();
+        const match = !q || text.includes(q) || note.includes(q);
+        li.classList.toggle('hidden', !match);
+        if (match) anyVisible = true;
+      });
+      phase.querySelectorAll('.group').forEach(group => {
+        const visible = group.querySelectorAll('li.item:not(.hidden)').length > 0;
+        group.classList.toggle('hidden', !visible && !!q);
+      });
+      phase.classList.toggle('hidden', !anyVisible && !!q);
+    });
+  }
+
+  /* ---------- Helpers ---------- */
+  function stripPhasePrefix(s) {
+    return s.replace(/^Phase\s+\d+\s*[—-]\s*/i, '');
+  }
+  function stripBold(s) { return s.replace(/\*\*/g, ''); }
+
+  function formatInline(s) {
+    if (!s) return '';
+    /* Escape HTML first */
+    let out = s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+    /* Bold **...** */
+    out = out.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    /* Italic *...* (single star) */
+    out = out.replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<em>$2</em>');
+    /* Inline code `...` */
+    out = out.replace(/`([^`]+)`/g, '<code>$1</code>');
+    return out;
+  }
+  function highlightHTML(s) { return formatInline(s); }
+
+  /* Smooth scroll for sidebar links */
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('.sidebar-nav a');
+    if (a) {
+      e.preventDefault();
+      const id = a.getAttribute('href').slice(1);
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+
+  /* Toast */
+  let toastTimer;
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('visible');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('visible'), 3200);
+  }
+
+  /* Init */
+  render();
+</script>
+</body>
+</html>
